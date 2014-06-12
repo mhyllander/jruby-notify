@@ -27,8 +27,8 @@ Please have a look at the platform specific notes on the [JNotify](http://jnotif
     require 'jruby-notify'
 
     notify = JRubyNotify::Notify.new
-    notify.watch Dir.pwd do |path, file|
-      puts "Detected change in: #{ File.join(path, file) }"
+    notify.watch Dir.pwd do |change, paths|
+      puts "Detected change '#{change}' in: #{ File.join(paths[0], paths[1]) }"
     end
 
     notify.run
