@@ -6,8 +6,8 @@ module JRubyNotify
       @callback = callback
     end
 
-    def file_renamed(watch, path, file, old)
-      clean_call(:renamed, path, file, old)
+    def file_renamed(watch, path, file, newfile)
+      clean_call(:renamed, path, file, newfile)
     end
 
     def file_modified(watch, path, file)
@@ -29,11 +29,8 @@ module JRubyNotify
     # This avoid a mix of different separators within the paths
     #
     def clean_call(change, *paths)
-      if File::ALT_SEPARATOR
-        @callback.call change, paths.map { |p| p.tr(File::ALT_SEPARATOR, File::SEPARATOR) }
-      else
-        @callback.call change, paths
-      end
+      paths = paths.map { |p| p.tr(File::ALT_SEPARATOR, File::SEPARATOR) } if File::ALT_SEPARATOR
+      @callback.call [change].concat(paths)
     end
 
   end
