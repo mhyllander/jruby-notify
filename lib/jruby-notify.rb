@@ -3,7 +3,7 @@ require 'jnotify/jnotify-0.94.jar'
 
 module JRubyNotify
 
-  VERSION = '0.4.0'
+  VERSION = '0.4.0.2'
 
   FILE_CREATED  = 1
   FILE_DELETED  = 2
@@ -37,7 +37,11 @@ module JRubyNotify
     return if library_path =~ /jnotify/i
 
     jnotify_library_path = File.expand_path(File.join(File.dirname(__FILE__), 'jnotify', 'shared'))
-    new_library_path = [jnotify_library_path, library_path].join(java.io.File.pathSeparator)
+
+    bit_specific_lib = java.lang.System.properties['os.arch'].index('64') ? '64bit' : '32bit'
+    jnotify_bit_specific_library_path = File.expand_path(File.join(File.dirname(__FILE__), 'jnotify', 'shared', bit_specific_lib))
+
+    new_library_path = [jnotify_bit_specific_library_path, jnotify_library_path, library_path].join(java.io.File.pathSeparator)
     java.lang.System.set_property('java.library.path', new_library_path)
 
     field = java.lang.Class.for_name('java.lang.ClassLoader').get_declared_field('sys_paths')
